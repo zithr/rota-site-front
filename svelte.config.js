@@ -1,7 +1,8 @@
 // import adapter from '@sveltejs/adapter-auto';
 import adapter from "@sveltejs/adapter-static"
 import preprocess from "svelte-preprocess"
-const baseUrl = process.env.BASE_URL || ""
+// const baseUrl = process.env.BASE_URL || ""
+const dev = process.env.NODE_ENV === 'development';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -17,7 +18,7 @@ const config = {
             fallback: null,
         }),
 		paths: {
-            base: baseUrl,
+            base: dev ? '' : '/rota-site-front',
         },
 		appDir: "internal",
 		vite: {
