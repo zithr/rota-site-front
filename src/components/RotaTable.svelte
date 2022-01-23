@@ -116,7 +116,7 @@
             $VolStore = vols_list["vols"]
         }
         $MenuInfoStore = e.detail
-        console.log($MenuInfoStore)
+        // console.log($MenuInfoStore)
         pos = {x:e.detail.x, y:e.detail.y}
         showMenu = true
     }

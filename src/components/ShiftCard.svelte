@@ -19,7 +19,7 @@
     const colour_code = { "(Duty Room)": "green-300", "(Leader)": "orange-300", "[closed]": "gray-300" }
 
     const handleClick = (event, i) => {
-        console.log(event.clientX, event.clientY)
+        // console.log(event.clientX, event.clientY)
         let pos = { x: event.clientX, y: event.clientY }
         let target_name = event.target.textContent.trim()
         if (target_name == "[sign up]") {
