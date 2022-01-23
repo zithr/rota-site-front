@@ -68,6 +68,7 @@
     $: unsortedColour = shift.vols.includes("[closed]") ? "bg-gray-300": get_bg_colour(shift.type)
 </script>
 
+<div class="bg-orange-300"></div>
 {#if shift.type.startsWith("(WEEK")}
     <div class="pb-1 px-2 rounded-lg border-2 border-gray-700 flex justify-center items-center bg-red-600 text-white">
         {shift.type}
