@@ -7,3 +7,8 @@ export const LoginStore = writable({
 export const ShowLoginStore = writable({
     showLogin: 0
 })
+
+export const VolStore = writable([])
+export const MenuInfoStore = writable({
+    curr_vol: 'none'
+})

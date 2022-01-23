@@ -1,7 +1,9 @@
 <script>
     import Menu from "./Menu.svelte"
     import MenuOption from "./MenuOption.svelte"
-
+    import { VolStore } from "../../stores"
+    import { MenuInfoStore } from "../../stores"
+    import { vols_list } from "../../test_vols.json"
     export let pos = { x: 0, y: 0 }
     export let showMenu
 
@@ -16,24 +18,22 @@
     }
 
     function closeMenu() {
-        console.log("close menu")
-        // showMenu = false
+        showMenu = false
     }
+
+    $: real_list = $VolStore.filter(vol => vol != $MenuInfoStore.curr_vol)
+    console.log(real_list)
+    
 </script>
 
-
 {#if showMenu}
-<div class="bg-red-600 flex float-right">menu up showmenu: {showMenu}</div>
     <Menu {...pos} on:click={console.log} on:clickoutside={closeMenu}>
-        <MenuOption on:click={console.log} text="Do nothing" />
-        <MenuOption on:click={console.log} text="Do nothing, but twice" />
-
-        <MenuOption isDisabled={true} on:click={console.log} text="Whoops, disabled!" />
-        <MenuOption on:click={console.log}>
-            <span>Look! An icon!</span>
-        </MenuOption>
+        <MenuOption on:click={console.log} text="Sign up:" />
+        <MenuOption on:click={console.log} dropdown={real_list} />
+        <div class="px-2 py-1 flex justify-center rounded-md bg-red-400">Close Shift</div>
+        
     </Menu>
 {/if}
-<div class="bg-red-600">menu hidden</div>
+
 
 <!-- <svelte:body on:contextmenu|preventDefault={onRightClick} /> -->

@@ -1,7 +1,10 @@
 <script>
     import ShiftCard from "./ShiftCard.svelte"
     import InteractMenu from "./rota_menu/InteractMenu.svelte"
+    import { VolStore } from "../stores";
+    import { MenuInfoStore } from "../stores";
     import { obj } from "../test_rota.json"
+    import { vols_list } from "../test_vols.json"
     const shifts_list = obj["Shifts"]
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -105,21 +108,22 @@
     const button_css =
         "p-6 rounded-lg border-gray-600 text-gray-700 font-semibold text-md hover:text-gray-900 hover:bg-slate-300"
 
-    import Menu from "./rota_menu/Menu.svelte"
-    let showMenu = false
+    $: showMenu = false
     let pos = {x:0, y:0}
-    console.log(`showmenu: ${showMenu}`)
-    const handleSign = (e) => {
-        console.log(e)
-        console.log(e.explicitOriginalTarget.offsetLeft,e.explicitOriginalTarget.offsetTop)
-        pos = {x:e.explicitOriginalTarget.offsetLeft, y:e.explicitOriginalTarget.offsetTop}
+    let handleSign = (e) => {
+        if ($VolStore.length < 1) {
+            //update Volstore
+            $VolStore = vols_list["vols"]
+        }
+        $MenuInfoStore = e.detail
+        console.log($MenuInfoStore)
+        pos = {x:e.detail.x, y:e.detail.y}
         showMenu = true
-        console.log(showMenu)
     }
 
 </script>
 
-<InteractMenu {showMenu} {pos}/>
+<InteractMenu bind:showMenu={showMenu} {pos}/>
 <div class="bg-blue-200">
     <div class="flex py-4 justify-center items-center">
         <button on:click={rotaPrevious} class="${button_css} px-4 py-2">Previous</button><button

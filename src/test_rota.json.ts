@@ -610,7 +610,7 @@ export const obj = {
             "time": "07:00 - 10:00",
             "type": "(Duty Room)",
             "vol_shift_id": [],
-            "vols": ["[sign up]", "[sign up]"]
+            "vols": ["[closed]"]
         },
         {
             "date": "28 Jan 22",
@@ -619,7 +619,7 @@ export const obj = {
             "time": "07:00 - 10:00",
             "type": "(Leader)",
             "vol_shift_id": [],
-            "vols": ["[sign up]"]
+            "vols": ["[closed]"]
         },
         {
             "date": "28 Jan 22",

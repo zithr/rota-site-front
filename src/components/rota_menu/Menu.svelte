@@ -13,7 +13,7 @@
         const rect = menuEl.getBoundingClientRect()
         x = Math.min(window.innerWidth - rect.width, x)
         if (y > window.innerHeight - rect.height) y -= rect.height
-    }//(x, y);
+    } //(x, y);
 
     const dispatch = createEventDispatcher()
 
@@ -23,23 +23,13 @@
 
     let menuEl
     function onPageClick(e) {
-        if (e.target === menuEl || menuEl.contains(e.target)) return
+        if (e.target === menuEl || menuEl.contains(e.target) ||e.defaultPrevented === true) return
         dispatch("clickoutside")
     }
 </script>
 
 <svelte:body on:click={onPageClick} />
 
-<div transition:fade={{ duration: 100 }} bind:this={menuEl} style="top: {y}px; left: {x}px;">
+<div transition:fade={{ duration: 100 }} bind:this={menuEl} style="top: {y}px; left: {x}px;" class="p-1 bg-blue-300 rounded-md absolute grid border border-gray-800 shadow">
     <slot />
 </div>
-
-<style>
-    div {
-        position: absolute;
-        display: grid;
-        border: 1px solid #0003;
-        box-shadow: 2px 2px 5px 0px #0002;
-        background: white;
-    }
-</style>
