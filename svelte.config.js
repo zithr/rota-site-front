@@ -1,6 +1,7 @@
 // import adapter from '@sveltejs/adapter-auto';
 import adapter from "@sveltejs/adapter-static"
 import preprocess from "svelte-preprocess"
+const baseUrl = process.env.BASE_URL || ""
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -9,7 +10,21 @@ const config = {
     preprocess: preprocess(),
 
     kit: {
-        adapter: adapter(),
+        adapter: adapter({
+            // default options are shown
+            pages: "build",
+            assets: "build",
+            fallback: null,
+        }),
+		paths: {
+            base: baseUrl,
+        },
+		appDir: "internal",
+		vite: {
+            define: {
+                "process.env": process.env,
+            },
+        },
 
         // hydrate the <div id="svelte"> element in src/app.html
         target: "#svelte",
