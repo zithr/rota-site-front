@@ -22,7 +22,6 @@
     }
 
     $: real_list = $VolStore.filter(vol => vol != $MenuInfoStore.curr_vol)
-    console.log(real_list)
     
 </script>
 
