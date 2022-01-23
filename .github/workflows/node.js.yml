@@ -36,7 +36,7 @@ jobs:
                 target_branch: gh-pages
                 build_dir: build
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_PAGES_TOKEN }}
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
             # - name: Publish to Github Pages
