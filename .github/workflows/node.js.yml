@@ -30,13 +30,13 @@ jobs:
             - run: npm run build --if-present
 
             - name: Deploy to GitHub Pages
-                uses: crazy-max/ghaction-github-pages@v2
-                with:
-                    allow_empty_commit: false
-                    target_branch: gh-pages
-                    build_dir: ${{ env.SUBDIRECTORY }}/build
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_PAGES_TOKEN }}
+              uses: crazy-max/ghaction-github-pages@v2
+              with:
+                allow_empty_commit: false
+                target_branch: gh-pages
+                build_dir: ${{ env.SUBDIRECTORY }}/build
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_PAGES_TOKEN }}
 
 
             # - name: Publish to Github Pages
