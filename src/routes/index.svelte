@@ -13,7 +13,7 @@
     <NavBar />
     {#if $ShowLoginStore["showLogin"]}
         <Modal on:close={() => ($ShowLoginStore["showLogin"] = 0)}>
-            <Login />
+            <Login on:close={() => ($ShowLoginStore["showLogin"] = 0)} />
         </Modal>
     {/if}
     {#if $LoginStore["username"]}

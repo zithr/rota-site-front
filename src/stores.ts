@@ -1,11 +1,11 @@
 import { writable } from "svelte/store";
 
 export const LoginStore = writable({
-    username: 'test'
+    username: ''
 })
 
 export const ShowLoginStore = writable({
-    showLogin: 0
+    showLogin: 1
 })
 
 export const VolStore = writable([])

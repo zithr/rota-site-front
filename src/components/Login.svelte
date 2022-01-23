@@ -1,10 +1,16 @@
 <script>
     import { LoginStore } from "../stores"
+    import { createEventDispatcher, onDestroy } from 'svelte';
+
+    const dispatch = createEventDispatcher();
+    const close = () => dispatch('close');
     let loginError = 0
 
     const setEmailInput = (e) => {}
     const loginSubmit = () => {
         $LoginStore["username"] = "test"
+        console.log("loginbutton")
+        close()
     }
 </script>
 
@@ -36,7 +42,7 @@
             <button
                 class="my-4 w-20 h-12 bg-green-400 rounded-lg shadow-md text-white font-semibold hover:bg-green-500"
                 autofocus
-                onClick={loginSubmit}
+                on:click={loginSubmit}
             >
                 Login
             </button>
