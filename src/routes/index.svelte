@@ -1,4 +1,5 @@
 <script lang="ts">
+    import "../input.css" 
     import { ShowLoginStore } from "../stores"
     import { LoginStore } from "../stores"
     import { fade, scale } from "svelte/transition"
