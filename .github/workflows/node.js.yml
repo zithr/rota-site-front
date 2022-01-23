@@ -34,7 +34,7 @@ jobs:
               with:
                 allow_empty_commit: false
                 target_branch: gh-pages
-                build_dir: ${{ env.SUBDIRECTORY }}/build
+                build_dir: build
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_PAGES_TOKEN }}
 
