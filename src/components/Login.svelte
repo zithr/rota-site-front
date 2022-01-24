@@ -5,11 +5,19 @@
     const dispatch = createEventDispatcher();
     const close = () => dispatch('close');
     let loginError = 0
+    let username = ''
+    let password = ''
 
     const setEmailInput = (e) => {}
     const loginSubmit = () => {
-        $LoginStore["username"] = "test"
-        console.log("loginbutton")
+        if (username === 'wrong') {
+            loginError = -1
+            return
+        }
+        loginError = 0
+        if (username === '') username = "test"
+        $LoginStore["username"] = username
+        console.log("login ", username)
         close()
     }
 </script>
@@ -26,7 +34,7 @@
                 }`}
                 type="text"
                 placeholder="Username"
-                onChange={(e) => setEmailInput(e.target)}
+                bind:value={username}
             />
             <input
                 class={`mt-3 p-1 block w-full h-12 rounded-md focus:outline-none ${
@@ -36,7 +44,7 @@
                 }`}
                 type="password"
                 placeholder="Password"
-                onChange={(e) => setEmailInput(e.target)}
+                bind:value={password}
             />
             <!-- svelte-ignore a11y-autofocus -->
             <button

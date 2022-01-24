@@ -1,11 +1,14 @@
 <script>
     import ShiftCard from "./ShiftCard.svelte"
     import InteractMenu from "./rota_menu/InteractMenu.svelte"
+    import { RotaStore } from "../stores";
     import { VolStore } from "../stores";
     import { MenuInfoStore } from "../stores";
-    import { obj } from "../test_rota.json"
+    import { DateStore } from "../stores";
+    // import { obj } from "../test_rota.json"
     import { vols_list } from "../test_vols.json"
-    const shifts_list = obj["Shifts"]
+    // const shifts_list = obj["Shifts"]
+    let shifts_list = $RotaStore["Shifts"]
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     $: display_start = []
@@ -46,8 +49,10 @@
         }
         return combo
     }
-       
-    const viewShifts = (start_date = null) => {
+
+    
+    //
+    const viewShifts = (start_date = null,) => {
         let displayShifts = [[], [], [], [], [], [], []]
         let d = new Date()
         if (start_date) {
@@ -57,7 +62,7 @@
         const target_start = d
         const target_end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7)
         let j = 0
-        for (const shift of shifts_list) {
+        for (const shift of $RotaStore["Shifts"]) {
             let shift_day = shift.date.slice(0, 2)
             let shift_month = shift.date.slice(3, 6)
             let shift_year = `20${shift.date.slice(7, 9)}`
@@ -89,18 +94,23 @@
 
     const rotaToday = () => {
         let dt = new Date()
+        $DateStore = dt
         visible_shifts = findStartDates(dt)
     }
 
     const rotaNext = () => {
-        let dt = currDt()
+        // let dt = currDt()
+        let dt = $DateStore
         dt.setDate(dt.getDate() + 7)
+        $DateStore = dt
         visible_shifts = findStartDates(dt)
     }
 
     const rotaPrevious = () => {
-        let dt = currDt()
+        // let dt = currDt()
+        let dt = $DateStore
         dt.setDate(dt.getDate() - 7)
+        $DateStore = dt
         visible_shifts = findStartDates(dt)
     }
 
@@ -116,14 +126,19 @@
             $VolStore = vols_list["vols"]
         }
         $MenuInfoStore = e.detail
-        // console.log($MenuInfoStore)
+        console.log(e.detail, $MenuInfoStore)
         pos = {x:e.detail.x, y:e.detail.y}
         showMenu = true
+    }
+    const handleUpdate = () => {
+        console.log("Update")
+        visible_shifts = findStartDates($DateStore)
+
     }
 
 </script>
 
-<InteractMenu bind:showMenu={showMenu} {pos}/>
+<InteractMenu bind:showMenu={showMenu} {pos} on:rota_updated={handleUpdate}/>
 <div class="bg-blue-200">
     <div class="flex py-4 justify-center items-center">
         <button on:click={rotaPrevious} class="${button_css} px-4 py-2">Previous</button><button

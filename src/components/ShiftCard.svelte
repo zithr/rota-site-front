@@ -16,29 +16,28 @@
 
     const dispatch = createEventDispatcher()
 
-    const colour_code = { "(Duty Room)": "green-300", "(Leader)": "orange-300", "[closed]": "gray-300" }
-
+    // handle duty room sign ups/edits [handles any sign ups in non-combo shifts]
+    // index can be 0 or 1, depending on vol position in shift (top/bottom)
+    // if shift is a combo shift (duty + leader), it will have attribute leader_shift_id
+    // dispatch id if shift is empty, or id+current_vol if shift is occupied
+    // dispatch mouse pos for menu popup location
     const handleClick = (event, i) => {
         // console.log(event.clientX, event.clientY)
         let pos = { x: event.clientX, y: event.clientY }
         let target_name = event.target.textContent.trim()
         if (target_name == "[sign up]") {
             console.log(`Sign up to empty slot in shift ${shift.shift_id}`)
-            dispatch("sign", { curr_vol:null, id: shift.shift_id, ...pos }) // dispatch current empty shift id to be filled, open menu at mouse location
+            dispatch("sign", { curr_vol:null, id: shift.shift_id, index: i, combo:shift.leader_shift_id, ...pos }) // dispatch current empty shift id to be filled, open menu at mouse location
         } else {
             console.log(`${target_name} vsid: ${shift.vol_shift_id[i]}`)
-            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.vol_shift_id[i], id: shift.shift_id, ...pos }) // dispatch current vol, vsid, shift_id to be replaced/removed from shift
+            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.vol_shift_id[i], id: shift.shift_id, index: i, combo:shift.leader_shift_id, ...pos }) // dispatch current vol, vsid, shift_id to be replaced/removed from shift
         }
     }
 
-    // const handleSignUp = (leader = false) => {
-    //     if (leader) {
-    //         console.log(`Sign up a leader for shift ${shift.leader_shift_id}`)
-    //     } else {
-    //         console.log(`Sign up a vol for shift ${shift.shift_id}`)
-    //     }
-    // }
-
+    // handle leader sign ups/edits
+    // dispatches leader shift in comboshifts only, as different id attribute for leadershift in a comboshift
+    // dispatch id if shift is empty, or id+current_vol if shift is occupied
+    // dispatch mouse pos for menu popup location
     const handleClickLeader = (event) => {
         let target_name = event.target.textContent.trim()
         let pos = { x: event.clientX, y: event.clientY }
@@ -52,7 +51,8 @@
     }
 
 
-    // background colours for shift cards, using colour_code above
+    // background colours for shift cards, using colour_code
+    const colour_code = { "(Duty Room)": "green-300", "(Leader)": "orange-300", "[closed]": "gray-300" }
     const get_bg_colour = (shift_type) => {
         if (shift.vols.includes("[closed]")) {
             let colour_string = "bg-gray-300"
@@ -103,7 +103,7 @@
                 <div class="flex justify-center items-center font-semibold">{shift.time}</div>
                 <div class="flex justify-center items-center text-xs">{shift.type}</div>
                 {#each shift.vols as vol, i}
-                    <div on:click={(event) => handleClick(event, i)} class="flex justify-center items-center">
+                    <div on:click={(event) => handleClick(event, i)} class="flex justify-center items-center font-black">
                         {vol}
                     </div>
                 {/each}
