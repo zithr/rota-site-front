@@ -33,6 +33,7 @@
     const handleSubmit = () => {
         console.log(`selected vol is ${selected}`)
         let id = volIdFromName(selected)
+        if ($MenuInfoStore.index === undefined) $MenuInfoStore.index = 0
         if (selected === "remove") {
             tempUnSign($MenuInfoStore.curr_vol, $MenuInfoStore.id, $MenuInfoStore.index)
             console.log(`Unsigning ${$MenuInfoStore.curr_vol}`)
@@ -62,6 +63,7 @@
 
     // only changes store
     const tempUnSign = (name: string, id: string, index: number) => {
+        console.log("unsign from id: ", id)
         let shifts = $RotaStore["Shifts"]
         for (let i = 0; i < shifts.length; i++) {
             console.log(shifts[i].vols[index] === name)
