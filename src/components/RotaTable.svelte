@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from 'svelte'
     import ShiftCard from "./ShiftCard.svelte"
     import InteractMenu from "./rota_menu/InteractMenu.svelte"
     import { RotaStore } from "../stores";
@@ -13,7 +14,26 @@
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     $: display_start = []
     
-    
+    let combo_shifts = []
+    onMount(async () => {
+        let temp_shifts = $RotaStore["Shifts"]
+        for (let i=0; i<temp_shifts.length; i++) {
+            if (temp_shifts[i].type === "(Duty Room)" && temp_shifts[i+1].type === "(Leader)" && temp_shifts[i+1].time === temp_shifts[i].time && temp_shifts[i+1].date === temp_shifts[i].date) {
+                    let new_combo = {...temp_shifts[i], "leader_shift_id": temp_shifts[i+1].shift_id, "leader_vols": temp_shifts[i+1].vols, "leader_vol_shift_id": temp_shifts[i+1].vol_shift_id}
+                    combo_shifts.push(new_combo)
+                    i++
+                }
+                else {
+                    combo_shifts.push({...temp_shifts[i], "leader_shift_id": null, "leader_vols": null, "leader_vol_shift_id": null})
+                }
+
+            
+        }
+        visible_shifts = findStartDates()
+
+    })
+
+
     const findStartDates = (datetime) => {
         let d = !datetime ? new Date() : datetime
         display_start = []
@@ -28,27 +48,27 @@
             display_start.push(a_str)
         }
         const displayShifts = viewShifts(d)
-        const newShifts = comboShifts(displayShifts)
+        // const newShifts = comboShifts(displayShifts)
         
-        return newShifts
+        return displayShifts
     }
 
-    const comboShifts = (shifts) => {
-        let combo = [[], [], [], [], [], [], []]
-        for (let i = 0; i < shifts.length; i++){
-            for (let j = 0; j < shifts[i].length; j++){
-                if (shifts[i][j].type === "(Duty Room)" && shifts[i][j+1].type === "(Leader)" && shifts[i][j+1].time === shifts[i][j].time && shifts[i][j+1].date === shifts[i][j].date) {
-                    let new_combo = {...shifts[i][j], "leader_shift_id": shifts[i][j+1].shift_id, "leader_vols": shifts[i][j+1].vols, "leader_vol_shift_id": shifts[i][j+1].vol_shift_id}
-                    combo[i].push(new_combo)
-                    j++
-                }
-                else {
-                    combo[i].push({...shifts[i][j], "leader_shift_id": null, "leader_vols": null, "leader_vol_shift_id": null})
-                }
-            }
-        }
-        return combo
-    }
+    // const comboShifts = (shifts) => {
+    //     let combo = [[], [], [], [], [], [], []]
+    //     for (let i = 0; i < shifts.length; i++){
+    //         for (let j = 0; j < shifts[i].length; j++){
+    //             if (shifts[i][j].type === "(Duty Room)" && shifts[i][j+1].type === "(Leader)" && shifts[i][j+1].time === shifts[i][j].time && shifts[i][j+1].date === shifts[i][j].date) {
+    //                 let new_combo = {...shifts[i][j], "leader_shift_id": shifts[i][j+1].shift_id, "leader_vols": shifts[i][j+1].vols, "leader_vol_shift_id": shifts[i][j+1].vol_shift_id}
+    //                 combo[i].push(new_combo)
+    //                 j++
+    //             }
+    //             else {
+    //                 combo[i].push({...shifts[i][j], "leader_shift_id": null, "leader_vols": null, "leader_vol_shift_id": null})
+    //             }
+    //         }
+    //     }
+    //     return combo
+    // }
 
     
     //
@@ -61,8 +81,7 @@
 
         const target_start = d
         const target_end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7)
-        let j = 0
-        for (const shift of $RotaStore["Shifts"]) {
+        for (const shift of combo_shifts) {
             let shift_day = shift.date.slice(0, 2)
             let shift_month = shift.date.slice(3, 6)
             let shift_year = `20${shift.date.slice(7, 9)}`
@@ -74,6 +93,7 @@
 
             let shift_date = new Date(Number(shift_year), Number(shift_month), Number(shift_day))
             if (shift_date >= target_start && shift_date < target_end) {
+                console.log("push")
                 let index = shift_date.getDay() === 0 ? 6 : shift_date.getDay() - 1
                 displayShifts[index].push(shift)
             }

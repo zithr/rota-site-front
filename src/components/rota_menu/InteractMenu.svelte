@@ -27,6 +27,7 @@
     function closeMenu() {
         showMenu = false
         showExpand = false
+        selected = "unsign"
     }
 
     // on popup menu submit, call requests eventually
@@ -35,6 +36,7 @@
         let id = volIdFromName(selected)
         if ($MenuInfoStore.index === undefined) $MenuInfoStore.index = 0
         if (selected === "remove") {
+            console.log("never runs, error if here")
             tempUnSign($MenuInfoStore.curr_vol, $MenuInfoStore.id, $MenuInfoStore.index)
             console.log(`Unsigning ${$MenuInfoStore.curr_vol}`)
         } else if ($MenuInfoStore.curr_vol) {

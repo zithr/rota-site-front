@@ -46,7 +46,7 @@
             dispatch("sign", { curr_vol:null, id: shift.leader_shift_id, ...pos })
         } else {
             console.log(`${target_name} leader_vsid: ${shift.leader_vol_shift_id}`)
-            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.leader_vol_shift_id, id: shift.shift_id, ...pos })  // same as above but for leader shifts
+            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.leader_vol_shift_id, id: shift.leader_shift_id, ...pos })  // same as above but for leader shifts
         }
     }
 
