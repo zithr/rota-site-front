@@ -9,6 +9,7 @@
     import { obj } from "../test_rota.json"
     import { vols_list } from "../test_vols.json"
     import plus from "../svg/plus.svelte"
+    import { Circle2 } from 'svelte-loading-spinners'
 import Plus from '../svg/plus.svelte';
     // const shifts_list = obj["Shifts"]
     // let shifts_list = $RotaStore["Shifts"]
@@ -138,6 +139,7 @@ import Plus from '../svg/plus.svelte';
         dt.setDate(dt.getDate() - 7)
         $DateStore = dt
         visible_shifts = findStartDates(dt)
+        console.log(visible_shifts[0])
     }
 
     const handleAddShift = (date) => {
@@ -174,7 +176,7 @@ import Plus from '../svg/plus.svelte';
 </script>
 
 <InteractMenu bind:showMenu={showMenu} {pos} on:rota_updated={handleUpdate}/>
-<div class="bg-blue-200">
+<div class="min-h-full">
     <div class="flex py-4 justify-center items-center">
         <button on:click={rotaPrevious} class="${button_css} px-4 py-2">Previous</button><button
             on:click={rotaToday}
@@ -183,6 +185,9 @@ import Plus from '../svg/plus.svelte';
     </div>
 
     <div class="flex justify-center">
+        {#if visible_shifts[0].length === 0}
+        <div class="py-24 flex justify-center items-center"><Circle2 size="60" unit="px"></Circle2></div>
+        {:else}
         {#each visible_shifts as shifts, j}
             <div class="flex-col py-2 px-6">
                 <div class="font-semibold">
@@ -198,5 +203,6 @@ import Plus from '../svg/plus.svelte';
                 {/each}
             </div>
         {/each}
+        {/if}
     </div>
 </div>

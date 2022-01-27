@@ -9,7 +9,7 @@
     import RotaTable from "../components/RotaTable.svelte"
 </script>
 
-<main class="">
+<main class="min-h-screen bg-blue-200">
     <NavBar />
     {#if $ShowLoginStore["showLogin"]}
         <Modal on:close={() => ($ShowLoginStore["showLogin"] = 0)}>
