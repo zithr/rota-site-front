@@ -22,8 +22,9 @@
     // dispatch id if shift is empty, or id+current_vol if shift is occupied
     // dispatch mouse pos for menu popup location
     const handleClick = (event, i) => {
-        // console.log(event.clientX, event.clientY)
-        let pos = { x: event.clientX, y: event.clientY }
+        console.log(event)
+        let pos = { x: event.pageX, y: event.pageY }
+        console.log(event.clientY)
         let target_name = event.target.textContent.trim()
         if (target_name == "[sign up]") {
             console.log(`Sign up to empty slot in shift ${shift.shift_id}`)

@@ -153,7 +153,7 @@ import Plus from '../svg/plus.svelte';
 
     $: visible_shifts = findStartDates()
     const button_css =
-        "p-6 rounded-lg border-gray-600 text-gray-700 font-semibold text-md hover:text-gray-900 hover:bg-slate-300"
+        "p-6 rounded-lg border-gray-600 text-gray-700 font-semibold text-md hover:text-green-900 hover:bg-green-200"
 
     $: showMenu = false
     let pos = {x:0, y:0}
@@ -163,7 +163,11 @@ import Plus from '../svg/plus.svelte';
             $VolStore = vols_list["vols"]
         }
         $MenuInfoStore = e.detail
-        console.log(e.detail, $MenuInfoStore)
+
+        // Put box in bounds if not in bounds
+        e.detail.x = Math.min(e.detail.x, window.innerWidth*0.8)
+        if (e.detail.y > window.innerHeight) e.detail.y -= window.innerHeight*0.1
+
         pos = {x:e.detail.x, y:e.detail.y}
         showMenu = true
     }
@@ -178,10 +182,10 @@ import Plus from '../svg/plus.svelte';
 <InteractMenu bind:showMenu={showMenu} {pos} on:rota_updated={handleUpdate}/>
 <div class="min-h-full">
     <div class="flex py-4 justify-center items-center">
-        <button on:click={rotaPrevious} class="${button_css} px-4 py-2">Previous</button><button
+        <button on:click={rotaPrevious} class="${button_css} px-3 py-2">Previous</button><button
             on:click={rotaToday}
-            class="${button_css} px-4 py-2">Today</button
-        ><button on:click={rotaNext} class="${button_css} px-4 py-2">Next</button>
+            class="${button_css} px-3 py-2">Today</button
+        ><button on:click={rotaNext} class="${button_css} px-3 py-2">Next</button>
     </div>
 
     <div class="flex justify-center">
@@ -193,7 +197,7 @@ import Plus from '../svg/plus.svelte';
                 <div class="font-semibold">
 
                     <div class="flex justify-center text-green-700 text-lg">
-                        <span on:click={() => handleAddShift(display_start[j])} class="h-4 w-4"><svelte:component this={plus} /></span></div>
+                        <span on:click={() => handleAddShift(display_start[j])} class="h-4 w-4 cursor-pointer"><svelte:component this={plus} /></span></div>
                     <div class="flex justify-center items-center">{days[j + 1]}</div>
                     <div class="flex justify-center items-center text-sm">{display_start[j]}</div>
                 </div>
