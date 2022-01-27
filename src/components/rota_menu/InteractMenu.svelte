@@ -47,7 +47,7 @@
         if (selected !== "unsign") {
             // makeSign($MenuInfoStore.id, id)
             const ind = tempSign(selected, $MenuInfoStore.id, $MenuInfoStore.index)
-            console.log(`Sign up complete: ${$RotaStore["Shifts"][ind].vols}`)
+            console.log(`Sign up complete: ${$RotaStore["Shifts"].vols}`)
         }
         dispatch("rota_updated")
         closeMenu()
@@ -96,19 +96,27 @@
     }
 
     // only changes store
-    // for some reason can't set vols of shift i+1 in single dispatch function, TODO
     const handleCloseShift = () => {
         let shifts = $RotaStore["Shifts"]
+        console.log(`Close shift id: ${$MenuInfoStore.id}`)
         for (let i = 0; i < shifts.length; i++) {
             if (shifts[i].shift_id === $MenuInfoStore.id) {
+                console.log("shift to close found")
                 //need to remove vol & close shift
                 shifts[i].vols = ["[closed]"]
+                if (shifts[i].leader_shift_id) {
+                    shifts[i].leader_vols = ["[closed]"]
+                    console.log("Attached leadershift closed")
+                }
+                console.log("new shift:")
+                console.log(shifts[i])
                 break
             }
         }
         $RotaStore["Shifts"] = shifts
         closeMenu()
         dispatch("rota_updated")
+        console.log("dispatched")
     }
 
     // only changes store
@@ -117,13 +125,13 @@
         let shifts = $RotaStore["Shifts"]
         for (let i = 0; i < shifts.length; i++) {
             if (shifts[i].shift_id === $MenuInfoStore.id) {
-                if ($MenuInfoStore.combo !== 0) {
-                    console.log(`delete 2 shifts: ${$MenuInfoStore.id} and ${$MenuInfoStore.combo}`)
-                    $RotaStore["Shifts"].splice(i, 2)
-                } else {
+                // if ($MenuInfoStore.combo !== 0) { // removed since combo shifts are stored as one object now
+                //     console.log(`delete 2 shifts: ${$MenuInfoStore.id} and ${$MenuInfoStore.combo}`)
+                //     $RotaStore["Shifts"].splice(i, 2)
+                // } else {}
                     console.log(`delete 1 shift: ${$MenuInfoStore.id}`)
                     $RotaStore["Shifts"].splice(i, 1)
-                }
+                
                 break
             }
         }

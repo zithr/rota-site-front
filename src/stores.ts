@@ -1,7 +1,20 @@
 import { writable } from "svelte/store";
-import { obj } from "./test_rota.json"
 
-export const RotaStore = writable(obj)
+// type Shift = {
+//     date: null,
+//     dt_obj: null,
+//     shift_id: null,
+//     time: null,
+//     type: null,
+//     vol_shift_id: [],
+//     vols: [],
+//     leader_shift_id: null, 
+//     leader_vols: null, 
+//     leader_vol_shift_id: null
+
+// }
+
+export const RotaStore = writable({})
 
 export const LoginStore = writable({
     username: ''

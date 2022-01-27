@@ -6,17 +6,22 @@
     import { VolStore } from "../stores";
     import { MenuInfoStore } from "../stores";
     import { DateStore } from "../stores";
-    // import { obj } from "../test_rota.json"
+    import { obj } from "../test_rota.json"
     import { vols_list } from "../test_vols.json"
+    import plus from "../svg/plus.svelte"
+import Plus from '../svg/plus.svelte';
     // const shifts_list = obj["Shifts"]
-    let shifts_list = $RotaStore["Shifts"]
+    // let shifts_list = $RotaStore["Shifts"]
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     $: display_start = []
     
     let combo_shifts = []
+
+    // load initial rota
+    // TODO load active vol list
     onMount(async () => {
-        let temp_shifts = $RotaStore["Shifts"]
+        let temp_shifts = obj["Shifts"]  // load from py instead of json file
         for (let i=0; i<temp_shifts.length; i++) {
             if (temp_shifts[i].type === "(Duty Room)" && temp_shifts[i+1].type === "(Leader)" && temp_shifts[i+1].time === temp_shifts[i].time && temp_shifts[i+1].date === temp_shifts[i].date) {
                     let new_combo = {...temp_shifts[i], "leader_shift_id": temp_shifts[i+1].shift_id, "leader_vols": temp_shifts[i+1].vols, "leader_vol_shift_id": temp_shifts[i+1].vol_shift_id}
@@ -29,8 +34,8 @@
 
             
         }
+        $RotaStore["Shifts"] = combo_shifts
         visible_shifts = findStartDates()
-
     })
 
 
@@ -81,19 +86,20 @@
 
         const target_start = d
         const target_end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7)
-        for (const shift of combo_shifts) {
+        for (const [j, shift] of combo_shifts.entries()) {
             let shift_day = shift.date.slice(0, 2)
             let shift_month = shift.date.slice(3, 6)
             let shift_year = `20${shift.date.slice(7, 9)}`
+            let shift_time = shift.time.slice(0,5).replace(":", "")
             for (let i = 0; i < 12; i++) {
                 if (shift_month === months[i]) {
                     shift_month = `${i}`
                 }
             }
 
+            combo_shifts[j].dt_obj = {time:shift_time, day:shift_day, month:shift_month, year:shift_year}  // add dt_obj to shift for easier date ordering
             let shift_date = new Date(Number(shift_year), Number(shift_month), Number(shift_day))
             if (shift_date >= target_start && shift_date < target_end) {
-                console.log("push")
                 let index = shift_date.getDay() === 0 ? 6 : shift_date.getDay() - 1
                 displayShifts[index].push(shift)
             }
@@ -134,6 +140,15 @@
         visible_shifts = findStartDates(dt)
     }
 
+    const handleAddShift = (date) => {
+        let add_date = date.split(" ")
+        for (const [ind, item] of months.entries()) {
+            if (item === add_date[1]) add_date[1] = ind
+        }
+        let dt = new Date(Number(add_date[2]), Number(add_date[1]), Number(add_date[0]))
+        console.log(`add shift on ${dt}`)
+    }
+
     $: visible_shifts = findStartDates()
     const button_css =
         "p-6 rounded-lg border-gray-600 text-gray-700 font-semibold text-md hover:text-gray-900 hover:bg-slate-300"
@@ -171,6 +186,9 @@
         {#each visible_shifts as shifts, j}
             <div class="flex-col py-2 px-6">
                 <div class="font-semibold">
+
+                    <div class="flex justify-center text-green-700 text-lg">
+                        <span on:click={() => handleAddShift(display_start[j])} class="h-4 w-4"><svelte:component this={plus} /></span></div>
                     <div class="flex justify-center items-center">{days[j + 1]}</div>
                     <div class="flex justify-center items-center text-sm">{display_start[j]}</div>
                 </div>
