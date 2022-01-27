@@ -34,20 +34,26 @@
     const handleSubmit = () => {
         console.log(`selected vol is ${selected}`)
         let id = volIdFromName(selected)
+        let leader_shift = false
         if ($MenuInfoStore.index === undefined) $MenuInfoStore.index = 0
+        let input_vars = $MenuInfoStore
         if (selected === "remove") {
             console.log("never runs, error if here")
-            tempUnSign($MenuInfoStore.curr_vol, $MenuInfoStore.id, $MenuInfoStore.index)
-            console.log(`Unsigning ${$MenuInfoStore.curr_vol}`)
-        } else if ($MenuInfoStore.curr_vol) {
-            console.log(`Replacing... index: ${$MenuInfoStore.index}`)
-            // unSign($MenuInfoStore.curr_vsid)
-            tempUnSign($MenuInfoStore.curr_vol, $MenuInfoStore.id, $MenuInfoStore.index)
+            // tempUnSign($MenuInfoStore.curr_vol, $MenuInfoStore.id, $MenuInfoStore.index)
+            // console.log(`Unsigning ${$MenuInfoStore.curr_vol}`)
+        } else if (input_vars.curr_vol) {
+            console.log(`Replacing... index: ${input_vars.index}`)
+            // unSign(input_vars.curr_vsid)
+            if (input_vars.leader_shift_id) leader_shift = true
+            console.log(`leader_shift is: ${leader_shift}`)
+            tempUnSign(input_vars, leader_shift)
         }
         if (selected !== "unsign") {
-            // makeSign($MenuInfoStore.id, id)
-            const ind = tempSign(selected, $MenuInfoStore.id, $MenuInfoStore.index)
-            console.log(`Sign up complete: ${$RotaStore["Shifts"].vols}`)
+            // makeSign(input_vars.id, id)
+            if (input_vars.leader_shift_id) leader_shift = true
+            let ind = tempSign(selected, input_vars, leader_shift)
+            console.log("Updated shift:")
+            console.log($RotaStore["Shifts"][ind])
         }
         dispatch("rota_updated")
         closeMenu()
@@ -64,28 +70,40 @@
     }
 
     // only changes store
-    const tempUnSign = (name: string, id: string, index: number) => {
-        console.log("unsign from id: ", id)
+    const tempUnSign = (input_vars, leader: boolean = false) => {
         let shifts = $RotaStore["Shifts"]
         for (let i = 0; i < shifts.length; i++) {
-            console.log(shifts[i].vols[index] === name)
-            if (shifts[i].shift_id === id) {
-                $RotaStore["Shifts"][i].vols[index] = "[sign up]"
-                return i
+            if (!leader) {
+                if (shifts[i].shift_id === input_vars.id) {
+                    $RotaStore["Shifts"][i].vols[input_vars.index] = "[sign up]"
+                    return i
+                }
+            } else {
+                if (shifts[i].leader_shift_id === input_vars.leader_shift_id) {
+                    $RotaStore["Shifts"][i].leader_vols = ["[sign up]"]
+                    return i
+                }
             }
         }
     }
 
     // only changes store
-    const tempSign = (name: string, id: string, index: number = 0) => {
+    const tempSign = (name: string, input_vars, leader: boolean = false) => {
         let shifts = $RotaStore["Shifts"]
         for (let i = 0; i < shifts.length; i++) {
-            if (shifts[i].shift_id === id) {
-                $RotaStore["Shifts"][i].vols[index] = name
-                if ($RotaStore["Shifts"][i].vols.length === 1 && name !== "[closed]") {
-                    $RotaStore["Shifts"][i].vols.push("[sign up]")
+            if (!leader) {
+                if (shifts[i].shift_id === input_vars.id) {
+                    $RotaStore["Shifts"][i].vols[input_vars.index] = name
+                    if ($RotaStore["Shifts"][i].vols.length === 1 && name !== "[closed]") {
+                        $RotaStore["Shifts"][i].vols.push("[sign up]")
+                    }
+                    return i
                 }
-                return i
+            } else {
+                if (shifts[i].leader_shift_id === input_vars.leader_shift_id) {
+                    $RotaStore["Shifts"][i].leader_vols = [name]
+                    return i
+                }
             }
         }
     }
@@ -101,7 +119,6 @@
         console.log(`Close shift id: ${$MenuInfoStore.id}`)
         for (let i = 0; i < shifts.length; i++) {
             if (shifts[i].shift_id === $MenuInfoStore.id) {
-                console.log("shift to close found")
                 //need to remove vol & close shift
                 shifts[i].vols = ["[closed]"]
                 if (shifts[i].leader_shift_id) {
@@ -129,9 +146,9 @@
                 //     console.log(`delete 2 shifts: ${$MenuInfoStore.id} and ${$MenuInfoStore.combo}`)
                 //     $RotaStore["Shifts"].splice(i, 2)
                 // } else {}
-                    console.log(`delete 1 shift: ${$MenuInfoStore.id}`)
-                    $RotaStore["Shifts"].splice(i, 1)
-                
+                console.log(`delete 1 shift: ${$MenuInfoStore.id}`)
+                $RotaStore["Shifts"].splice(i, 1)
+
                 break
             }
         }

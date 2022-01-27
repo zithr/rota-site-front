@@ -28,6 +28,8 @@ export const VolStore = writable([])
 export const MenuInfoStore = writable({
     curr_vol: null,
     curr_vsid: null,
+    curr_leader_vsid:null,
+    leader_shift_id:null,
     id: null,
     index: 0,
     combo: 0,

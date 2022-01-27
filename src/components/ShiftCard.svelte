@@ -30,7 +30,7 @@
             dispatch("sign", { curr_vol:null, id: shift.shift_id, index: i, combo:shift.leader_shift_id, ...pos }) // dispatch current empty shift id to be filled, open menu at mouse location
         } else {
             console.log(`${target_name} vsid: ${shift.vol_shift_id[i]}`)
-            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.vol_shift_id[i], id: shift.shift_id, index: i, combo:shift.leader_shift_id, ...pos }) // dispatch current vol, vsid, shift_id to be replaced/removed from shift
+            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.vol_shift_id[i], curr_leader_vsid: null, leader_shift_id: null, id: shift.shift_id, index: i, combo:shift.leader_shift_id, ...pos }) // dispatch current vol, vsid, shift_id to be replaced/removed from shift
         }
     }
 
@@ -43,10 +43,10 @@
         let pos = { x: event.clientX, y: event.clientY }
         if (target_name == "[sign up]") {
             console.log(`handleSignUp for Leader in shift ${shift.leader_shift_id}`)
-            dispatch("sign", { curr_vol:null, id: shift.leader_shift_id, ...pos })
+            dispatch("sign", { curr_vol:null, leader_shift_id: shift.leader_shift_id, ...pos })
         } else {
             console.log(`${target_name} leader_vsid: ${shift.leader_vol_shift_id}`)
-            dispatch("sign", { curr_vol:target_name, curr_vsid:shift.leader_vol_shift_id, id: shift.leader_shift_id, ...pos })  // same as above but for leader shifts
+            dispatch("sign", { curr_vol:target_name, curr_leader_vsid:shift.leader_vol_shift_id, leader_shift_id: shift.leader_shift_id, ...pos })  // same as above but for leader shifts
         }
     }
 
