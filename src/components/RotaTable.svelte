@@ -22,23 +22,45 @@ import Plus from '../svg/plus.svelte';
     // load initial rota
     // TODO load active vol list
     onMount(async () => {
-        let temp_shifts = obj["Shifts"]  // load from py instead of json file
-        for (let i=0; i<temp_shifts.length; i++) {
-            if (temp_shifts[i].type === "(Duty Room)" && temp_shifts[i+1].type === "(Leader)" && temp_shifts[i+1].time === temp_shifts[i].time && temp_shifts[i+1].date === temp_shifts[i].date) {
-                    let new_combo = {...temp_shifts[i], "leader_shift_id": temp_shifts[i+1].shift_id, "leader_vols": temp_shifts[i+1].vols, "leader_vol_shift_id": temp_shifts[i+1].vol_shift_id}
-                    combo_shifts.push(new_combo)
-                    i++
-                }
-                else {
-                    combo_shifts.push({...temp_shifts[i], "leader_shift_id": null, "leader_vols": null, "leader_vol_shift_id": null})
-                }
-
-            
-        }
-        $RotaStore["Shifts"] = combo_shifts
-        visible_shifts = findStartDates()
+        let temp_shifts
+        // let temp_shifts = obj["Shifts"]  // load from py instead of json file
+        let res = await fetch("https://3.90.102.33:80/api/rota", {
+                method: "GET",
+                mode: "cors",
+                // Allows cookies to be set/accessed
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(x => x.json()).then(data => { if (!data) {
+                // need to dispatch login request + last fetch request to queue up after login success
+                console.log("login error, no data found, using fake data")
+                temp_shifts = obj["Shifts"]
+                $RotaStore["Shifts"] = temp_to_combo(temp_shifts)
+                visible_shifts = findStartDates()
+            }
+        else {
+            temp_shifts = data
+            combo_shifts = temp_to_combo(data)
+            $RotaStore["Shifts"] = combo_shifts
+            visible_shifts = findStartDates()
+        }})
     })
 
+    const temp_to_combo = (temp_shifts) => {
+        let combo_shifts = []
+        for (let i=0; i<temp_shifts.length; i++) {
+                if (temp_shifts[i].type === "(Duty Room)" && temp_shifts[i+1].type === "(Leader)" && temp_shifts[i+1].time === temp_shifts[i].time && temp_shifts[i+1].date === temp_shifts[i].date) {
+                        let new_combo = {...temp_shifts[i], "leader_shift_id": temp_shifts[i+1].shift_id, "leader_vols": temp_shifts[i+1].vols, "leader_vol_shift_id": temp_shifts[i+1].vol_shift_id}
+                        combo_shifts.push(new_combo)
+                        i++
+                    }
+                    else {
+                        combo_shifts.push({...temp_shifts[i], "leader_shift_id": null, "leader_vols": null, "leader_vol_shift_id": null})
+                    }
+            }
+        return combo_shifts
+    }
 
     const findStartDates = (datetime) => {
         let d = !datetime ? new Date() : datetime

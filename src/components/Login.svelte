@@ -1,23 +1,48 @@
 <script>
     import { LoginStore } from "../stores"
-    import { createEventDispatcher, onDestroy } from 'svelte';
+    import { createEventDispatcher } from "svelte"
+    import { SyncLoader } from "svelte-loading-spinners"
 
-    const dispatch = createEventDispatcher();
-    const close = () => dispatch('close');
+    const dispatch = createEventDispatcher()
+    const close = () => dispatch("close")
+    let logLoad = false
     let loginError = 0
-    let username = ''
-    let password = ''
+    let username = $LoginStore.username ? $LoginStore.username : ""
+    let password = ""
 
     const setEmailInput = (e) => {}
-    const loginSubmit = () => {
-        if (username === 'wrong') {
+    const loginSubmit = async () => {
+        logLoad = true
+        document.cookie = "account_credentials=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        if (username === "wrong") {
             loginError = -1
+            logLoad = false
             return
         }
         loginError = 0
-        if (username === '') username = "test"
+        if (username === "") {
+            // await new Promise(r => setTimeout(r, 2000))
+            username = "test"
+            $LoginStore["username"] = username
+            console.log("test login")
+            close()
+            logLoad = false
+            return
+        }
+        let data = { username: username, password: password }
+        let res = await fetch("https://3.90.102.33:80/api/login", {
+            method: "POST",
+            mode: "cors",
+            // Allows cookies to be set
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }) //.then(x => x.json())
         $LoginStore["username"] = username
-        console.log("login ", username)
+        logLoad = false
+        console.log(res.json())
         close()
     }
 </script>
@@ -47,13 +72,26 @@
                 bind:value={password}
             />
             <!-- svelte-ignore a11y-autofocus -->
-            <button
-                class="my-4 w-20 h-12 bg-green-400 rounded-lg shadow-md text-white font-semibold hover:bg-green-500"
-                autofocus
-                on:click={loginSubmit}
-            >
-                Login
-            </button>
+            {#if !logLoad}
+                <button
+                    class="my-4 w-20 h-12 bg-green-400 rounded-lg shadow-md text-white font-semibold hover:bg-green-500"
+                    autofocus
+                    on:click={loginSubmit}
+                >
+                    Login
+                </button>
+            {:else}
+                <button
+                    class="my-4 w-20 h-12 bg-gray-400 rounded-lg shadow-md"
+                    autofocus
+                    disabled={true}
+                    on:click={loginSubmit}
+                >
+                    <div class="flex items-center justify-center">
+                        <SyncLoader size="20" color="green" unit="px" />
+                    </div>
+                </button>
+            {/if}
         </div>
     </div>
 </div>

@@ -5,7 +5,7 @@
     export let link
     export let align = "left"
 
-    const click = () => {
+    const click = async () => {
         console.log(`push ${link}`)
         switch (label) {
             case "Login":
@@ -20,6 +20,23 @@
                 }
             case "Logout":
                 $LoginStore["username"] = ""
+            case "Else":
+                let res = await fetch("http://localhost:8000/api/rota", {
+                method: "GET",
+                mode: "cors",
+                // Allows cookies to be set/accessed
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(x => x.json()).then(data => { if (!data) {
+                // need to dispatch login request + last fetch request to queue up after login success
+                $ShowLoginStore.showLogin = 1
+            }
+        else {
+            console.log(data)
+        }})
+
         }
     }
 </script>

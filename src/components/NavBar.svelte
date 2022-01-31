@@ -1,6 +1,7 @@
 <script>
     import NavBarButton from "./NavBarButton.svelte"
     import { LoginStore } from "../stores"
+
 </script>
 
 <div class="h-11 sticky top-0 py-1 px-3 bg-gray-50 shadow-md">
