@@ -24,7 +24,7 @@ import Plus from '../svg/plus.svelte';
     onMount(async () => {
         let temp_shifts
         // let temp_shifts = obj["Shifts"]  // load from py instead of json file
-        let res = await fetch("https://3.90.102.33/api/rota", {
+        let res = await fetch("https://3.90.102.33/api/rota", { // https://3.90.102.33  // 
                 method: "GET",
                 mode: "cors",
                 // Allows cookies to be set/accessed

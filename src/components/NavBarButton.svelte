@@ -6,6 +6,7 @@
     export let align = "left"
 
     const click = async () => {
+        let res
         console.log(`push ${link}`)
         switch (label) {
             case "Login":
@@ -20,23 +21,48 @@
                 }
             case "Logout":
                 $LoginStore["username"] = ""
-            case "Else":
-                let res = await fetch("http://localhost:8000/api/rota", {
-                method: "GET",
-                mode: "cors",
-                // Allows cookies to be set/accessed
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }).then(x => x.json()).then(data => { if (!data) {
-                // need to dispatch login request + last fetch request to queue up after login success
-                $ShowLoginStore.showLogin = 1
-            }
-        else {
-            console.log(data)
-        }})
-
+            case "LocalRota":
+                res = await fetch("http://localhost:8000/api/rota", {
+                    // https://3.90.102.33  //
+                    method: "GET",
+                    mode: "cors",
+                    // Allows cookies to be set/accessed
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((x) => x.json())
+                    .then((data) => {
+                        if (!data) {
+                            // need to dispatch login request + last fetch request to queue up after login success
+                            console.log("login error, no data found, using fake data")
+                            // $ShowLoginStore.showLogin = 1
+                        } else {
+                            console.log(data)
+                        }
+                    })
+            case "TestCookies":
+                res = await fetch("http://localhost:8000/api/test", {
+                    // https://3.90.102.33  //
+                    method: "GET",
+                    mode: "cors",
+                    // Allows cookies to be set/accessed
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((x) => x.json())
+                    .then((data) => {
+                        if (!data) {
+                            // need to dispatch login request + last fetch request to queue up after login success
+                            console.log("login error, no data found, using fake data")
+                            // $ShowLoginStore.showLogin = 1
+                        } else {
+                            console.log(data)
+                        }
+                    })
         }
     }
 </script>

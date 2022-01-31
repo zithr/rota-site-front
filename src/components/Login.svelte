@@ -30,7 +30,7 @@
             return
         }
         let data = { username: username, password: password }
-        let res = await fetch("https://3.90.102.33/api/login", {
+        let res = await fetch("https://3.90.102.33/api/login", { //https://3.90.102.33 // http://localhost:8000
             method: "POST",
             mode: "cors",
             // Allows cookies to be set
