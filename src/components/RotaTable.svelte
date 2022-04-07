@@ -6,7 +6,7 @@
     import { VolStore } from "../stores";
     import { MenuInfoStore } from "../stores";
     import { DateStore } from "../stores";
-    import { obj } from "../test_rota.json"
+    import { obj } from "../test_rota_old.json"
     import { vols_list } from "../test_vols.json"
     import plus from "../svg/plus.svelte"
     import { Circle2 } from 'svelte-loading-spinners'
