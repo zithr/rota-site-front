@@ -21,7 +21,7 @@
                 }
             case "Logout":
                 $LoginStore["username"] = ""
-            case "LocalRota":
+            case "LocalHostRota":
                 res = await fetch("http://localhost:8000/api/rota", {
                     // https://3.90.102.33  //
                     method: "GET",

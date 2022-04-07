@@ -7,7 +7,7 @@
 <div class="h-11 sticky top-0 py-1 px-3 bg-gray-50 shadow-md">
     <NavBarButton label="Home" link="/home" />
     <NavBarButton label="Rota" link="/rota" />
-    <NavBarButton label="LocalRota" link="/else" />
+    <NavBarButton label="LocalHostRota" link="/else" />
     <NavBarButton label="TestCookies" link="/else" />
     {#if !$LoginStore["username"]}
         <NavBarButton label="Login" link="/login" align="right" />
