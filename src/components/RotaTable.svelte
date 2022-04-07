@@ -1,16 +1,19 @@
 <script>
     import { onMount } from "svelte"
+    import moment from "moment"
     import ShiftCard from "./ShiftCard.svelte"
     import InteractMenu from "./rota_menu/InteractMenu.svelte"
     import { RotaStore } from "../stores"
     import { VolStore } from "../stores"
     import { MenuInfoStore } from "../stores"
     import { DateStore } from "../stores"
+    import { LoginStore } from "../stores"
     import { obj } from "../test_rota.json"
     import { vols_list } from "../test_vols.json"
     import plus from "../svg/plus.svelte"
     import { Circle2 } from "svelte-loading-spinners"
     import Plus from "../svg/plus.svelte"
+import { mount_component } from "svelte/internal";
     // const shifts_list = obj["Shifts"]
     // let shifts_list = $RotaStore["Shifts"]
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -97,7 +100,6 @@
             display_start.push(a_str)
         }
         const displayShifts = viewShifts(d)
-        console.log(`findstartdates ${d}`)
         // const newShifts = comboShifts(displayShifts)
 
         return displayShifts
@@ -151,7 +153,6 @@
             if (shift_date >= target_start && shift_date < target_end) {
                 let index = shift_date.getDay() === 0 ? 6 : shift_date.getDay() - 1
                 displayShifts[index].push(shift)
-                console.log("pushing shifts??")
             }
         }
         return displayShifts
@@ -180,7 +181,7 @@
         dt.setDate(dt.getDate() + 7)
         $DateStore = dt
         visible_shifts = findStartDates(dt)
-        console.log(dt)
+        console.log(`display rota for : ${dt}`)
     }
 
     const rotaPrevious = () => {
@@ -189,7 +190,7 @@
         dt.setDate(dt.getDate() - 7)
         $DateStore = dt
         visible_shifts = findStartDates(dt)
-        console.log(dt)
+        console.log(`display rota for : ${dt}`)
     }
 
     const handleAddShift = (date) => {
@@ -241,7 +242,7 @@
             <div class="py-24 flex justify-center items-center"><Circle2 size="60" unit="px" /></div>
         {:else}
             {#each visible_shifts as shifts, j}
-                <div class="flex-col py-2 px-6">
+                <div class={`flex-col py-2 px-6 ${display_start[j]===moment().format('D MMM YYYY') ? "bg-yellow-200 rounded-md" :""}`}>
                     <div class="font-semibold">
                         <div class="flex justify-center text-green-700 text-lg">
                             <span on:click={() => handleAddShift(display_start[j])} class="h-4 w-4 cursor-pointer"

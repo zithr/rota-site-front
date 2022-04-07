@@ -46,6 +46,7 @@
     "eslint-plugin-svelte3": "^3.2.1",
     "graphql": "^15.8.0",
     "graphql-request": "^3.7.0",
+    "moment": "^2.29.2",
     "postcss": "^8.4.5",
     "prettier": "^2.4.1",
     "prettier-plugin-svelte": "^2.4.0",
