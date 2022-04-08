@@ -26,9 +26,9 @@ const config = {
                 "process.env": process.env,
             },
         },
-        // prerender: { 
-        //     default: true 
-        // },
+        prerender: { 
+            default: true 
+        },
 
         // hydrate the <div id="svelte"> element in src/app.html
         // target: "#svelte",
